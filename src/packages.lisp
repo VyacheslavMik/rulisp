@@ -49,3 +49,12 @@
            #:*cookie-cipher-key*
            #:*datastore*
            #:*host*))
+
+(restas:define-module #:rulisp.planet
+  (:use #:cl #:iter)
+  (:export #:*name*
+           #:*suggest-mail*
+           #:*feeds*
+           #:*schedule*
+           #:*cache-dir*
+           #:*template*))

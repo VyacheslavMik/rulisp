@@ -175,16 +175,16 @@
 
 ;;;; Russian Lisp Planet
 
-(restas:mount-module -planet- (#:restas.planet)
+(restas:mount-module -planet- (#:rulisp.planet)
   (:url "planet")
-  (restas.planet:*suggest-mail* "archimag@lisper.ru")
-  (restas.planet:*feeds* (merge-pathnames "planet-feeds.lisp" *rulisp-path*))
-  (restas.planet:*name* "Russian Lisp Planet")  
-  (restas.planet:*cache-dir* (merge-pathnames "planet/" *cachedir*))
-  (restas.planet:*template* (lambda (data)
+  (rulisp.planet:*suggest-mail* "archimag@lisper.ru")
+  (rulisp.planet:*feeds* (merge-pathnames "planet-feeds.lisp" *rulisp-path*))
+  (rulisp.planet:*name* "Russian Lisp Planet")  
+  (rulisp.planet:*cache-dir* (merge-pathnames "planet/" *cachedir*))
+  (rulisp.planet:*template* (lambda (data)
                               (rulisp-finalize-page :title "Russian Lisp Planet"
                                                     :css '("style.css" "planet.css" "colorize.css")
-                                                    :content (restas.planet.view:feed-html-body data)))))
+                                                    :content (rulisp.planet.view:feed-html-body data)))))
 
 ;;;; static files
 

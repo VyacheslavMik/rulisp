@@ -12,14 +12,18 @@
                #:simple-date
 	       #:postmodern
                #:zip
-	       #:restas-planet
 	       #:restas-wiki
                #:restas-colorize
 	       #:restas-directory-publisher
 	       #:restas-forum
                #:xfactory
 	       #:cl-typesetting
-               #:wiki-parser)
+               #:wiki-parser
+	       #:net-telent-date
+	       #:local-time
+	       #:clon
+	       #:closure-template
+	       #:cl-libxml2)
   :defsystem-depends-on (#:closure-template)
   :components ((:file "pref")
                (:module :src
@@ -38,6 +42,11 @@
 							   (:file "sendmail" :depends-on ("defmodule"))
 							   (:file "simple-auth" :depends-on ("cookie" "sendmail")))
                                               :depends-on ("packages"))
+				     (:module "planet"
+					      :components ((:file "feed-parser")
+							   (:file "spider" :depends-on ("feed-parser"))
+							   (:file "planet" :depends-on ("spider")))
+					      :depends-on ("packages"))
                                      (:file "storage" :depends-on ("packages"))
                                      (:file "pcl"  :depends-on ("rulisp"))
                                      (:file "jscl"  :depends-on ("rulisp"))
@@ -45,4 +54,3 @@
 								  "dokuwiki"
 								  "auth")))
                         :depends-on ("pref"))))
-
