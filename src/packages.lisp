@@ -38,3 +38,14 @@
 (restas:define-module #:rulisp.jscl
   (:use #:cl #:rulisp.preferences)
   (:export #:jscl-main))
+
+(restas:define-module #:rulisp.auth
+  (:use #:cl #:iter)
+  (:export #:*sendmail*
+           #:*noreply-email*
+           #:*re-email-check* 
+           #:*finalize-page*
+           #:*cookie-auth-name*
+           #:*cookie-cipher-key*
+           #:*datastore*
+           #:*host*))

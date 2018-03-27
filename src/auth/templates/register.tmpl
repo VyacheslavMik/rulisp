@@ -1,0 +1,124 @@
+// -*- mode: closure-template-html -*-
+//
+// register.tmpl
+//
+// This file is part of the restas-simple-auth library, released under Lisp-LGPL.
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+{namespace rulisp.auth.view}
+
+{template registerForm}
+    <div>
+        <h3>Создайте учётную запись</h3>
+
+        <form method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Имя входа (логин):</td>
+                        <td>
+                            {if $badName}
+                                <div class="error-info">
+                                    {switch $badName}
+                                      {case 'empty'} Не указан логин
+                                      {case 'exist'} Пользователь с таким логином уже существует
+                                    {/switch}
+                                </div>
+                            {/if}
+                            <input name="name" size="30" {if $name}value="{$name}"{/if} /> 
+                            <div class="info">Например: graham, Piter.Norvig </div> 
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Ваш email:</td>
+                        <td>
+                            {if $badEmail}
+                                <div class="error-info">
+                                    {switch $badEmail}
+                                      {case 'empty'} Не указан email
+                                      {case 'bad'} Это не похоже на email
+                                      {case 'exist'} Пользователь с таким email уже существует
+                                    {/switch}
+                                </div>
+                            {/if}
+                            <input name="email" size="30" {if $email}value="{$email}"{/if}/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Укажите пароль:</td>
+                        <td>
+                            {if $badPassword}
+                                <div class="error-info">
+                                    {switch $badPassword}
+                                      {case 'empty'} Необходимо ввести пароль
+                                      {case 'short'} Слишком короткий
+                                    {/switch}
+                                </div>
+                            {/if}
+                            <input name="password" type="password" size="30" {if $password}value="{$password}"{/if} />
+                            <div class="info">Минимальная длина - 8 символов</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Введите пароль ещё раз:</td>
+                        <td>
+                            {if $badRePassword}
+                                <div class="error-info">
+                                    Пароли не совпадают
+                                </div>
+                            {/if}
+                            <input name="re-password" type="password" size="30" {if $rePassword}value="{$rePassword}"{/if}/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="submit" value="Создать учётную запись" />
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </form>
+    </div>
+{/template}
+
+{template registerSendMail}
+    <div>
+        <p>Вам выслано письмо со ссылкой на продолжение регистрации.</p>
+    </div>
+{/template}
+
+{template confirmationMail}
+    {nil}To: {foreach $receiver in $to}{if not isFirst($receiver)}{sp}{/if}{$receiver}{/foreach}{\n}
+    {nil}From: {$noreplyMail}{\n}
+    {nil}Subject: {$subject}{\n}
+    {nil}Content-Type: text/html; charset=utf-8{\n}
+    {\n}
+
+    Здравствуйте, 
+    <p>
+        Для завершения регистрации на <a href="http://{$host}/">{$host}</a> перейдите по ссылке <a href="{$link}">{$link}</a>.
+    </p>
+
+    <p>
+        Если Вы не регистрировались на сайте <a href="http://{$host}">{$host}</a>, то просто проигнорируйте это сообщение.
+    </p>
+
+    Keeper
+{/template}
+
+
+{template successRegistration}
+    <div>
+        Поздравляем с успешной регистрацией!</a>
+    </div>
+{/template}
+
+

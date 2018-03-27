@@ -1,0 +1,125 @@
+// -*- mode: closure-template-html -*-
+//
+// forgot.tmpl
+//
+// This file is part of the restas-simple-auth library, released under Lisp-LGPL.
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+{namespace rulisp.auth.view}
+
+{template forgot}
+    <div>
+        <form method="post">
+            <h3>Забыли свой пароль?</h3>
+            <p>Нам необходимо убедиться, что Вы имеете доступ к учётной записи электронной почты</p>
+
+            <table >
+                <tbody>
+                    <tr>
+                        <td>Логин или адрес электронной почты</td>
+                        <td>
+                            {if $bad}
+                               <div class="error-info">Пользователь с таким логином или email не зарегестрирован</div>
+                            {/if}
+                            <input name="email-or-login" {if $email}value="{$emailOrLogin}"{/if} />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td />
+                        <td><input type="submit" value="Отправить" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Forgot send mail
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template forgotSendMail}
+    <div>
+        <h3>Забыли свой пароль?</h3>
+        <p>Вам выслано письмо со ссылкой на продолжение.</p>
+    </div>
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Reset password form
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template resetPasswordForm}
+    <div>
+        <form method="post">
+            <table >
+                <tbody>
+                    <tr>
+                        <td>Новый Пароль </td>
+                        <td>
+                            {switch $badPassword}
+                                {case 'empty'}<div class="error-info">Необходимо указать пароль</div>
+                                {case 'short'}<div class="error-info">Должно быть не менее 8 символов</div>
+                            {/switch}
+                            
+                            <input type="password" name="password" {if $password}value="{$password}"{/if}/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Повторите Новый Пароль </td>
+                        <td>
+                            {if $badRePassword}
+                                <div class="error-info">Пароли не совпадают</div>
+                            {/if}
+                            <input type="password" name="re-password" {if $rePassword}value="{$rePassword}"{/if}/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td />
+                        <td><input type="submit" value="Изменить" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Reset password success
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template resetPasswordSuccess}
+    <div>
+        <p>Пароль успешно обновлён</p>
+    </div>
+{/template}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Mails
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template forgotMail}
+    {nil}To: {foreach $receiver in $to}{if not isFirst($receiver)}{sp}{/if}{$receiver}{/foreach}{\n}
+    {nil}From: {$noreplyMail}{\n}
+    {nil}Subject: {$subject}{\n}
+    {nil}Content-Type: text/html; charset=utf-8{\n}
+    {\n}
+    
+    <p>
+        Вы попросили изменить свой пароль на сайте <a href="http://{$host}/">{$host}</a>.
+        Вы можете это сделать по адрессу: <a href="{$link}">{$link}</a>
+    </p>
+
+    <p>
+        Эта ссылка будет работоспособной в течении двух дней. 
+        Если Вы не запрашивали это сообщение, то просто игнорируйте его.
+    </p>
+
+   Keeper
+{/template}

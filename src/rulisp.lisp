@@ -19,7 +19,7 @@
                    module))))
     (let ((rulisp-module (find-upper-module restas:*module*)))
       (restas::with-module (gethash '-auth- (slot-value rulisp-module 'restas::children))
-        (restas.simple-auth::compute-user-login-name)))))
+        (rulisp.auth::compute-user-login-name)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; rulisp templates
@@ -94,14 +94,14 @@
 
 ;; ;;;; auth
 
-(restas:mount-module -auth- (#:restas.simple-auth)
-  (restas.simple-auth:*datastore* *rulisp-db-storage*)
-  (restas.simple-auth:*noreply-email* *noreply-mail-account*)
-  (restas.simple-auth:*cookie-cipher-key* *cookie-cipher-key*)
-  (restas.simple-auth:*finalize-page* (lambda (content)
-                                        (rulisp-finalize-page :title (getf content :title)
-                                                              :css '("style.css")
-                                                              :content (getf content :body)))))
+(restas:mount-module -auth- (#:rulisp.auth)
+  (rulisp.auth:*datastore* *rulisp-db-storage*)
+  (rulisp.auth:*noreply-email* *noreply-mail-account*)
+  (rulisp.auth:*cookie-cipher-key* *cookie-cipher-key*)
+  (rulisp.auth:*finalize-page* (lambda (content)
+				 (rulisp-finalize-page :title (getf content :title)
+						       :css '("style.css")
+						       :content (getf content :body)))))
 
 ;;;; forum
 
@@ -110,7 +110,7 @@
   (:render-method
    (lambda (obj)
      (rulisp-finalize-page :title (getf obj :title)
-                           :content (restas:render-object (find-package '#:restas.forum.view) 
+                           :content (restas:render-object (find-package '#:restas.forum.view)
                                                           obj)
                            :css '("style.css" "jquery.wysiwyg.css" "forum.css" "colorize.css" )
                            :js (getf obj :js))))
