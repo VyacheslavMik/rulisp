@@ -12,7 +12,6 @@
                #:simple-date
 	       #:postmodern
                #:zip
-	       #:restas-wiki
                #:restas-colorize
 	       #:restas-directory-publisher
 	       #:restas-forum
@@ -23,14 +22,15 @@
 	       #:local-time
 	       #:clon
 	       #:closure-template
-	       #:cl-libxml2)
+	       #:cl-libxml2
+	       #:babel)
   :defsystem-depends-on (#:closure-template)
   :components ((:file "pref")
                (:module :src
                         :components ((:file "packages")
                                      (:module "dokuwiki"
                                               :components ((:file "render-html"))
-                                              :depends-on ("packages"))
+                                              :depends-on ("packages" "wiki"))
 				     (:module "auth"
                                               :components ((:module "templates"
 								    :components ((:closure-template "forgot")
@@ -46,6 +46,13 @@
 					      :components ((:file "feed-parser")
 							   (:file "spider" :depends-on ("feed-parser"))
 							   (:file "planet" :depends-on ("spider")))
+					      :depends-on ("packages"))
+				     (:module "wiki"
+					      :components
+					      ((:file "wiki")
+					       (:file "storage")
+					       (:file "drawer")
+					       (:file "routes" :depends-on ("storage" "drawer")))
 					      :depends-on ("packages"))
                                      (:file "storage" :depends-on ("packages"))
                                      (:file "pcl"  :depends-on ("rulisp"))

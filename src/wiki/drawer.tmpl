@@ -1,0 +1,113 @@
+// -*- mode: closure-template-html -*-
+//
+// This file is part of the rulisp application, released under GNU Affero General Public License, Version 3.0
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+{namespace rulisp.wiki.view}
+
+{template finalizePage}
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    {\n}
+    <html xmlns="http://www.w3.org/1999/xhtml">
+	    <head>
+      	    <meta http-equiv="Content-Type" content="text/html; charset='utf-8'" />
+
+            {if $title}
+                <title>{$title}</title>
+            {/if}
+	    </head>
+
+	    <body>
+            {if $menuLinks}
+                {call showPageMenu data="$menuLinks" /}
+            {/if}
+            
+            {$content |noAutoescape}
+        </body>
+    </html>
+{/template}
+
+{template showPageMenu}
+    <ul class="wiki-page-menu">
+        {if $editHref}
+            <li>
+                <a href="{$editHref}">Edit</a>
+            </li>
+        {/if}
+
+         {if $currentVersionHref}
+            <li>
+                <a href="{$currentVersionHref}">Current version</a>
+            </li>
+         {/if}
+
+         {if $historyHref}
+            <li>
+                <a href="{$historyHref}">History</a>
+            </li>
+         {/if}
+
+         {if $pdfHref}
+            <li>
+                <a href="{$pdfHref}">PDF</a>
+            </li>
+         {/if}
+
+         {if $viewHref}
+            <li>
+                <a href="{$viewHref}">View</a>
+            </li>
+         {/if}
+    </ul>
+{/template}
+
+{template generateBodyContent}
+    <h1>{$title}</h1>
+    {$content |noAutoescape}
+{/template}
+
+{template page-not-found}
+   <h1>Эта страница ещё не существует</h1>
+   <a href="{$createLink}">Создать</a>
+{/template}
+
+{template editWikiPage}
+    <form  method="post">           
+        <textarea rows="30" cols="80" name="content">
+            {nil}{$content}{nil}
+        </textarea>
+        
+        <div class="edit-buttons">
+            <input type="submit" value="Save" name="save" />
+            <input type="submit" value="Preview" name="preview" />
+            <input type="submit" value="Cancel" name="cancel" />
+        </div>
+    </form>
+
+    {if $preview}
+        {$preview |noAutoescape}
+    {/if}
+{/template}
+
+{template historyWikiPage}
+    <h1>{$title}</h1>
+
+    <ul>
+        {foreach $version in $history}
+            <li>
+                {$version.date}
+                <a href="{$version.href}">{$version.name}</a>
+                <span style="color: #665">{$version.author}</span>
+            </li>
+        {/foreach}
+    </ul>
+{/template}
+
+
+{template archiveNotFound}
+    Archive file not found
+{/template}
+
+

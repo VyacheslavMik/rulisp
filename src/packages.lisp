@@ -58,3 +58,21 @@
            #:*schedule*
            #:*cache-dir*
            #:*template*))
+
+(restas:define-module #:rulisp.wiki
+  (:use #:cl #:iter)
+  (:export #:*index-page-title*
+           #:*wiki-user-function*
+
+           ;; storage
+           #:*storage*
+           #:file-storage
+           #:storage-find-page
+           #:storage-save-page
+           #:storage-page-history
+
+           ;; drawer
+           #:drawer
+           #:finalize-page
+           #:render-route-data
+           #:generate-content-from-markup)) 

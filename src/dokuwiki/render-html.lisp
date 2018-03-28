@@ -419,7 +419,7 @@
 ;;;; drawer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass dokuwiki-drawer (restas.wiki:drawer) ())
+(defclass dokuwiki-drawer (rulisp.wiki:drawer) ())
 
-(defmethod restas.wiki:generate-content-from-markup ((drawer dokuwiki-drawer) data)
+(defmethod rulisp.wiki:generate-content-from-markup ((drawer dokuwiki-drawer) data)
   (render-wiki-page-to-string (wiki-parser:parse :dokuwiki (call-next-method))))

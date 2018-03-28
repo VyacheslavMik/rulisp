@@ -146,29 +146,29 @@
 
 (defclass drawer (dokuwiki-drawer) ())
 
-(defmethod restas.wiki:finalize-page ((drawer drawer) content)
+(defmethod rulisp.wiki:finalize-page ((drawer drawer) content)
   (rulisp-finalize-page :title (getf content :title)
                         :css '("style.css" "wiki.css" "colorize.css")
                         :content (concatenate 'string
-                                              (restas.wiki.view:show-page-menu (getf content :menu-links))
+                                              (rulisp.wiki.view:show-page-menu (getf content :menu-links))
                                               (getf content :content))))
 
 
-(restas:mount-module -wiki- (#:restas.wiki)
+(restas:mount-module -wiki- (#:rulisp.wiki)
   (:url "wiki")
   (:render-method (make-instance 'drawer))
-  (restas.wiki:*storage* (make-instance 'restas.wiki:file-storage :dir *wiki-dir*))
-  (restas.wiki:*wiki-user-function* #'compute-user-login-name))
+  (rulisp.wiki:*storage* (make-instance 'rulisp.wiki:file-storage :dir *wiki-dir*))
+  (rulisp.wiki:*wiki-user-function* #'compute-user-login-name))
 
 ;;;; articles
 
-(restas:mount-module -articles- (#:restas.wiki)
+(restas:mount-module -articles- (#:rulisp.wiki)
   (:url "articles")
   (:render-method (make-instance 'drawer))
-  (restas.wiki:*index-page-title* "Статьи")
-  (restas.wiki:*storage* (make-instance 'restas.wiki:file-storage
+  (rulisp.wiki:*index-page-title* "Статьи")
+  (rulisp.wiki:*storage* (make-instance 'rulisp.wiki:file-storage
                                         :dir #P"/var/rulisp/articles/"))
-  (restas.wiki:*wiki-user-function* #'(lambda ()
+  (rulisp.wiki:*wiki-user-function* #'(lambda ()
                                         (find (compute-user-login-name)
                                               '("archimag" "dmitry_vk")
                                               :test #'string=))))
