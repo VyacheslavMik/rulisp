@@ -13,7 +13,6 @@
 	       #:postmodern
                #:zip
 	       #:restas-directory-publisher
-	       #:restas-forum
                #:xfactory
 	       #:cl-typesetting
                #:wiki-parser
@@ -23,7 +22,8 @@
 	       #:closure-template
 	       #:cl-libxml2
 	       #:babel
-	       #:colorize)
+	       #:colorize
+	       #:metabang-bind)
   :defsystem-depends-on (#:closure-template)
   :components ((:file "pref")
                (:module :src
@@ -59,6 +59,11 @@
 							   (:file "storage" :depends-on ("defmodule"))
 							   (:file "drawer" :depends-on ("defmodule"))
 							   (:file "routes" :depends-on ("storage" "drawer")))
+					      :depends-on ("packages"))
+				     (:module "forum"
+					      :components ((:file "defmodule")
+							   (:file "storage" :depends-on ("defmodule"))
+							   (:file "forum" :depends-on ("storage")))
 					      :depends-on ("packages"))
                                      (:file "storage" :depends-on ("packages"))
                                      (:file "pcl"  :depends-on ("rulisp"))

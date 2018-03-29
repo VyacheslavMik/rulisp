@@ -1,0 +1,285 @@
+// -*- mode: closure-template-html -*-
+// forum.tmpl
+//
+// This file is part of the restas-forum library, released under Lisp-LGPL.
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+{namespace rulisp.forum.view}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * list all forums
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template list-forums}
+    <div class="rss-link">
+        <a href="{$feedHref}">RSS</a>
+    </div>
+
+    {foreach $forum in $forums}
+       <div class="forum">
+           <a href="{$forum.href}">{$forum.title}</a>
+       </div>
+    {/foreach}
+{/template}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * list forum topics
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template nav-panel}
+  <div align="right" class="info">
+      {if $hrefAfter}<a href="{$hrefAfter}">« Позже</a>{/if}
+      Темы <strong>{$first}</strong> -
+      <strong>{min($first + length($topics) - 1, $totalCount)}</strong>
+      из <strong>{$totalCount}</strong>
+      {if $hrefBefore}<a href="{$hrefBefore}">Раньше »</a>{/if}
+  </div>
+{/template}
+
+{template list-topics}
+    <div id="forum-nav-panel">
+        <a class="rss-link" href="{$hrefRss}">RSS</a>
+
+        <ul>
+            <li>
+                <a href="{$listForumsHref}">Список форумов</a>
+            </li>
+            
+            <li>
+                <strong>{$title}</strong>
+            </li>
+        </ul>
+    </div>
+
+    {call nav-panel data="all" /}
+
+    <div class="topic-list">
+        {foreach $topic in $topics}
+            <div class="topic">
+                {if $topic.hrefDelete}<a href="{$topic.hrefDelete}" class="delete-this">Удалить</a>{/if}
+                <a href="{$topic.href}">{$topic.title != '' ? $topic.title : '*notitle*'}</a>
+                {if length($topic.pages) > 1}
+                    (стр.
+                    {foreach $page in $topic.pages}
+                        {if not(isFirst($page))}
+                            <a href="{$page.href}">{$page.number}</a>{nil}
+                            {if isLast($page)}){/if}
+                        {/if}
+                    {/foreach}
+                {/if}
+                
+                <div class="topic-info">
+                    <span "topic-author">
+                        Автор: <strong>{$topic.author}</strong> - {$topic.createDate} <br />
+                        Сообщений: {$topic.messageCount}
+                        {if $topic.lastAuthor}
+                            <br />
+                            Последнее: {$topic.lastAuthor} - {$topic.lastDate}                        
+                        {/if}
+                    </span>
+                </div>
+            </div>
+        {/foreach}
+    </div>
+
+    {call nav-panel data="all" /}
+
+    {if $canCreateNewTopic}
+        <input type="button" value="+ Новая тема" onclick="newmessage()" />
+
+        <form id="editor" method="post" class="newmessage" style="display: none">
+            <div>
+                <strong>Тема:</strong>
+                <input name="title" size="80" />
+            </div>
+            <div>
+                <textarea id="wysiwyg" rows="20" name="body"></textarea>
+            </div>
+            <div>
+                <input type="submit" value="Отправить" />
+                <input type="reset" name="cancel" value="Отмена" />
+            </div>
+        </form>
+
+        {call insertCodeDialog data="$colorize" /}
+    {/if}
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * view-topic
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template view-topic}
+   {call view-topic-page data="all" /}
+{/template}
+
+{template topic-pages-navigation}
+    <div class="topic-pages">
+        {if length($pages) > 1}
+            <strong>Страницы:</strong>
+            {foreach $page in $pages}
+                {if not($page.current)}
+                    <a href="{$page.href}">{$page.number}</a>
+                 {else}
+                    <span class="current-page">{$page.number}</span>
+                 {/if}
+            {/foreach}
+        {/if}
+    </div>
+{/template}
+
+{template view-topic-page}
+    <div class="thread">
+        <div id="forum-nav-panel">
+            <a class="rss-link" href="{$rssHref}">RSS</a>
+            <ul>
+                <li>
+                    <a href="{$listForumsHref}">Список форумов</a>
+                </li>
+                <li>
+                    <a href="{$parentForum.href}">{$parentForum.title}</a>
+                </li>
+                <li>
+                    <strong>{$message.title}</strong>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="topic">
+            <div>
+                <big>{$message.title}</big>
+            </div>
+            <div class="topic-info">
+                <span class="topic-author">
+                    <strong>{$message.author}</strong>
+                    - {$message.created}, Сообщений - {$message.countReplies}
+                </span>
+            </div>
+            
+            <div class="topicbody">
+                {$message.body |noAutoescape}
+            </div>
+
+            {if $canCreateMessage}
+                <div class="topic-info">
+                    <a href="{$message.hrefReply}" class="reply-link">Ответить</a>
+                </div>
+            {/if}
+        </div>
+
+        {call topic-pages-navigation}
+           {param pages: $pages /}
+        {/call}
+
+        {foreach $reply in $replies}
+            <div class="reply" id="comment-{$reply.id}">
+                <div class="topic-info">
+                    {if $reply.hrefDelete}
+                        <a class="delete-this" href="{$reply.hrefDelete}">Удалить</a>
+                    {/if}
+                    [<a href="{$reply.href}">#</a>]
+
+                    {if $reply.prevMsg}
+                        Ответ на
+                        <a href="{$reply.prevMsg.href}">комментарий</a>
+                        от {$reply.prevMsg.author} {$reply.prevMsg.created}
+                    {/if}
+                </div>
+
+                <div class="replybody">
+                    {$reply.body |noAutoescape}
+                </div>
+
+
+                <div class="topic-info">
+                    <span class="topic-author">
+                        <strong>{$reply.author}</strong>
+                        - {$reply.date}
+                    </span>
+
+                    {if $canCreateMessage}
+                        <a href="{$reply.hrefReply}" class="reply-link">Ответить</a>
+                    {/if}
+                </div>
+            </div>
+        {/foreach}
+
+        {call topic-pages-navigation}
+           {param pages: $pages /}
+        {/call}
+    </div>
+
+    {if $canCreateMessage}
+       <form method="post" class="newmessage" style="display:none" id="editor">
+           <input id="reply-on" style="display:none" />
+           <div>
+               <textarea rows="20" name="body" id="wysiwyg"></textarea>
+           </div>
+           <div>
+               <input type="submit" value="Отправить" />
+               <input type="reset" name="cancel" value="Отмена" />
+           </div>
+       </form>
+
+       {call insertCodeDialog data="$colorize" /}
+    {/if}
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * create-reply
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template create-reply}
+      Извините, этот функционал ещё не реализован.
+{/template}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * rss
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template rss-feed}
+   {nil}<?xml version="1.0" encoding="utf-8"?>{\n}
+    <rss version="2.0">
+        <channel>
+            <title>{$title}</title>
+            <link>{$link}</link>
+            <description>{$description}</description>
+
+            {foreach $item in $messages}
+                <item>
+                    <title>{$item.author}: {$item.title}</title>
+                    <link>{$item.href}</link>
+                    <description>{$item.message}</description>
+                    <pubDate>{$item.date}</pubDate>
+                </item>
+            {/foreach}
+        </channel>
+    </rss>
+{/template}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Insert code dialog
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template insertCodeDialog}
+    <div id="insert-code" class="jqmWindow">
+        <select>
+            <option value="NONE">None</option>
+            {foreach $lang in $langs}
+                <option value="{$lang.id}">{$lang.title}</option>
+            {/foreach}
+        </select>
+        <div>
+            <textarea rows="20" cols="80" ></textarea>
+            <div style="display: none"></div>
+        </div>
+        <button id="insert-code-ok">Готово</button>
+        <button id="insert-code-preview">Предпросмотр</button>
+        <button id="insert-code-cancel" class="jqmClose">Отмена</button>
+    </div>
+{/template}

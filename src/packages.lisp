@@ -102,3 +102,31 @@
            #:render-route-data
            #:colorize
            #:colorize-langs))
+
+
+(restas:define-module #:rulisp.forum
+  (:use #:cl #:iter)
+  (:export #:*storage*
+           #:*site-name*
+           #:*finalize-page*
+           #:*max-topic-on-page*
+           #:*max-reply-on-page*
+           #:*user-name-function*
+           #:*rss-item-count*
+
+           ;; storage interface
+           #:storage-admin-p
+           #:storage-list-forums
+           #:storage-list-topics
+           #:storage-create-topic
+           #:storage-delete-topic
+           #:storage-forum-info
+           #:storage-topic-message
+           #:storage-topic-reply-count
+           #:storage-topic-replies
+           #:storage-create-reply
+           #:storage-delete-reply
+           #:storage-reply-position
+           #:storage-all-news
+           #:storage-forum-news
+           #:storage-topic-news))

@@ -105,18 +105,18 @@
 
 ;;;; forum
 
-(restas:mount-module -forum- (#:restas.forum)
+(restas:mount-module -forum- (#:rulisp.forum)
   (:url "forum")
   (:render-method
    (lambda (obj)
      (rulisp-finalize-page :title (getf obj :title)
-                           :content (restas:render-object (find-package '#:restas.forum.view)
+                           :content (restas:render-object (find-package '#:rulisp.forum.view)
                                                           obj)
                            :css '("style.css" "jquery.wysiwyg.css" "forum.css" "colorize.css" )
                            :js (getf obj :js))))
-  (restas.forum:*site-name* "Lisper.ru")
-  (restas.forum:*storage* *rulisp-db-storage*)
-  (restas.forum:*user-name-function* #'compute-user-login-name))
+  (rulisp.forum:*site-name* "Lisper.ru")
+  (rulisp.forum:*storage* *rulisp-db-storage*)
+  (rulisp.forum:*user-name-function* #'compute-user-login-name))
 
 ;;;; format
 

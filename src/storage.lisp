@@ -134,13 +134,13 @@
 
 ;;;; storage-admin-p
 
-(defmethod restas.forum:storage-admin-p ((storage rulisp-db-storage) user)
+(defmethod rulisp.forum:storage-admin-p ((storage rulisp-db-storage) user)
   (member user '("archimag" "lispnik" "turtle")
           :test #'string=))
 
 ;;;; storage-list-forums
 
-(defmethod restas.forum:storage-list-forums ((storage rulisp-db-storage))
+(defmethod rulisp.forum:storage-list-forums ((storage rulisp-db-storage))
   (with-db-storage storage
     (postmodern:query (:order-by 
                        (:select 'pretty-forum-id 'description
@@ -164,7 +164,7 @@
         ORDER BY COALESCE(m.created, fm.created) DESC
         LIMIT $3 OFFSET $2")
 
-(defmethod restas.forum:storage-list-topics ((storage rulisp-db-storage) forum limit offset)
+(defmethod rulisp.forum:storage-list-topics ((storage rulisp-db-storage) forum limit offset)
   (with-db-storage storage
     (iter (for (author title created id message-count last-author last-date first-author) in (select-topics* forum offset limit))
           (collect (list :author author
@@ -177,13 +177,13 @@
 
 ;;; storage-create-topic
 
-(defmethod restas.forum:storage-create-topic ((storage rulisp-db-storage) forum-id title body user)
+(defmethod rulisp.forum:storage-create-topic ((storage rulisp-db-storage) forum-id title body user)
   (with-db-storage storage
     (postmodern:query (:select (:rlf-new-topic forum-id title body user)))))
 
 ;;; storage-delete-topic
 
-(defmethod restas.forum:storage-delete-topic ((storage rulisp-db-storage) topic)
+(defmethod rulisp.forum:storage-delete-topic ((storage rulisp-db-storage) topic)
   (with-db-storage storage
     (let ((forum-id (postmodern:query (:select '* :from (:rlf_delete_topic topic))
                                       :single)))
@@ -193,7 +193,7 @@
 
 ;;;; storage-form-info
 
-(defmethod restas.forum:storage-forum-info ((storage rulisp-db-storage) forum)
+(defmethod rulisp.forum:storage-forum-info ((storage rulisp-db-storage) forum)
   (with-db-storage storage
     (postmodern:query (:select 'description 'all-topics
                                :from 'rlf-forums
@@ -202,7 +202,7 @@
 
 ;;;; storage-topic-message
 
-(defmethod restas.forum:storage-topic-message ((storage rulisp-db-storage) topic-id)
+(defmethod rulisp.forum:storage-topic-message ((storage rulisp-db-storage) topic-id)
   (with-db-storage storage
     (bind:bind (((title id message-id all-message author body created) 
                  (postmodern:query (:select (:dot :t 'title)
@@ -235,7 +235,7 @@
 
 ;;;; storage-topic-reply-count
 
-(defmethod restas.forum:storage-topic-reply-count ((storage rulisp-db-storage) topic)
+(defmethod rulisp.forum:storage-topic-reply-count ((storage rulisp-db-storage) topic)
   (with-db-storage storage
     (postmodern:query (:select (:count '*) :from 'rlf-messages
                                :where (:= 'topic-id topic))
@@ -243,7 +243,7 @@
 
 ;;;; storage-topic-replies
 
-(defmethod restas.forum:storage-topic-replies ((storage rulisp-db-storage) topic limit offset)
+(defmethod rulisp.forum:storage-topic-replies ((storage rulisp-db-storage) topic limit offset)
   (with-db-storage storage
     (postmodern:query (:limit 
                        (:order-by 
@@ -266,7 +266,7 @@
 
 ;;;; storage-create-reply
 
-(defmethod restas.forum:storage-create-reply ((storage rulisp-db-storage) reply-on body user)
+(defmethod rulisp.forum:storage-create-reply ((storage rulisp-db-storage) reply-on body user)
   (with-db-storage storage
     (let ((message-id (postmodern:query (:select (:nextval "rlf_messages_message_id_seq"))
                                         :single)))
@@ -281,7 +281,7 @@
 
 ;;;; storage-delete-reply
 
-(defmethod restas.forum:storage-delete-reply ((storage rulisp-db-storage) reply)
+(defmethod rulisp.forum:storage-delete-reply ((storage rulisp-db-storage) reply)
   (let ((topic-id (with-db-storage storage
                     (postmodern:query (:select '* :from (:rlf_delete_message reply))
                                       :single))))
@@ -291,7 +291,7 @@
 
 ;;;; storage-reply-position
 
-(defmethod restas.forum:storage-reply-position ((storage rulisp-db-storage) reply)
+(defmethod rulisp.forum:storage-reply-position ((storage rulisp-db-storage) reply)
   (with-db-storage storage
     (let ((topic-id (postmodern:query (:select 'topic-id :from 'rlf-messages
                                                :where (:= 'message-id reply))
@@ -329,15 +329,15 @@
                         ,limit)
                        :plists)))
 
-(defmethod restas.forum:storage-all-news ((storage rulisp-db-storage) limit)
+(defmethod rulisp.forum:storage-all-news ((storage rulisp-db-storage) limit)
   (new-messages nil limit))
 
-(defmethod restas.forum:storage-forum-news ((storage rulisp-db-storage) forum limit)
+(defmethod rulisp.forum:storage-forum-news ((storage rulisp-db-storage) forum limit)
   (new-messages (:= (:dot :f 'pretty-forum-id)
                     forum)
             limit))
 
-(defmethod restas.forum:storage-topic-news ((storage rulisp-db-storage) topic limit)
+(defmethod rulisp.forum:storage-topic-news ((storage rulisp-db-storage) topic limit)
   (new-messages (:= (:dot :m 'topic-id)
                     topic)
             limit))
