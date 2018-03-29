@@ -12,7 +12,6 @@
                #:simple-date
 	       #:postmodern
                #:zip
-               #:restas-colorize
 	       #:restas-directory-publisher
 	       #:restas-forum
                #:xfactory
@@ -23,7 +22,8 @@
 	       #:clon
 	       #:closure-template
 	       #:cl-libxml2
-	       #:babel)
+	       #:babel
+	       #:colorize)
   :defsystem-depends-on (#:closure-template)
   :components ((:file "pref")
                (:module :src
@@ -53,6 +53,12 @@
 					       (:file "storage")
 					       (:file "drawer")
 					       (:file "routes" :depends-on ("storage" "drawer")))
+					      :depends-on ("packages"))
+				     (:module "colorize"
+					      :components ((:file "defmodule")
+							   (:file "storage" :depends-on ("defmodule"))
+							   (:file "drawer" :depends-on ("defmodule"))
+							   (:file "routes" :depends-on ("storage" "drawer")))
 					      :depends-on ("packages"))
                                      (:file "storage" :depends-on ("packages"))
                                      (:file "pcl"  :depends-on ("rulisp"))

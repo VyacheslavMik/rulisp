@@ -76,3 +76,29 @@
            #:finalize-page
            #:render-route-data
            #:generate-content-from-markup)) 
+
+(restas:define-module #:rulisp.colorize
+  (:use #:cl #:iter)
+  (:export #:*storage*
+           #:*finalize-page*
+           #:*colorize-user-function*
+           #:*max-on-page*
+           ;; note
+           #:note
+           #:note-id
+           #:note-title
+           #:note-author
+           #:note-code
+           #:note-date
+           #:note-lang
+           ;; storage
+           #:storage-count-notes
+           #:storage-list-notes
+           #:storage-get-note
+           #:storage-add-note
+           #:storage-remove-note
+           ;;
+           #:finalize-page
+           #:render-route-data
+           #:colorize
+           #:colorize-langs))

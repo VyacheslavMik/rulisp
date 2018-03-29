@@ -120,9 +120,9 @@
 
 ;;;; format
 
-(defclass pastebin-drawer (restas.colorize::drawer) ())
+(defclass pastebin-drawer (rulisp.colorize::drawer) ())
 
-(defmethod restas.colorize::finalize-page ((drawer pastebin-drawer) data)
+(defmethod rulisp.colorize::finalize-page ((drawer pastebin-drawer) data)
   (rulisp-finalize-page  :title (getf data :title)
                          :css '("style.css" "colorize.css")
                          :content (concatenate 'string
@@ -130,12 +130,12 @@
                                                (getf data :content))))
 
 
-(restas:mount-module -format- (#:restas.colorize)
+(restas:mount-module -format- (#:rulisp.colorize)
   (:url "apps/format/")
   (:render-method (make-instance 'pastebin-drawer))
-  (restas.colorize:*max-on-page* 15)
-  (restas.colorize:*storage* *rulisp-db-storage*)
-  (restas.colorize:*colorize-user-function* #'compute-user-login-name))
+  (rulisp.colorize:*max-on-page* 15)
+  (rulisp.colorize:*storage* *rulisp-db-storage*)
+  (rulisp.colorize:*colorize-user-function* #'compute-user-login-name))
 
 ;;;; jscl
 

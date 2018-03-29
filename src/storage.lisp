@@ -346,7 +346,7 @@
 ;;; pastebin
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod restas.colorize:storage-count-notes ((storage rulisp-db-storage))
+(defmethod rulisp.colorize:storage-count-notes ((storage rulisp-db-storage))
   (with-db-storage storage
     (postmodern:query (:select (:count '*) :from 'formats)
                       :single)))
@@ -357,10 +357,10 @@
     ORDER BY f.created DESC
     LIMIT $2 OFFSET $1")
 
-(defmethod restas.colorize:storage-list-notes ((storage rulisp-db-storage) offset limit)
+(defmethod rulisp.colorize:storage-list-notes ((storage rulisp-db-storage) offset limit)
   (with-db-storage storage
     (iter (for item in (select-formats* offset limit))
-          (collect (make-instance 'restas.colorize:note
+          (collect (make-instance 'rulisp.colorize:note
                                   :id (first item)
                                   :author (second item)
                                   :title (third item)
@@ -372,10 +372,10 @@
      WHERE format_id = $1"
   :row)
 
-(defmethod restas.colorize:storage-get-note ((storage rulisp-db-storage) id)
+(defmethod rulisp.colorize:storage-get-note ((storage rulisp-db-storage) id)
   (with-db-storage storage
     (let ((raw (get-note* id)))
-      (make-instance 'restas.colorize:note
+      (make-instance 'rulisp.colorize:note
                      :id id
                      :author (first raw)
                      :title (second raw)
@@ -383,19 +383,19 @@
                      :date (local-time:universal-to-timestamp (simple-date:timestamp-to-universal-time  (fourth raw)))
                      :lang (fifth raw)))))
 
-(defmethod restas.colorize:storage-add-note ((storage rulisp-db-storage) note)
+(defmethod rulisp.colorize:storage-add-note ((storage rulisp-db-storage) note)
   (with-db-storage storage
     (let ((id (postmodern:query (:select (:nextval "formats_format_id_seq"))
                                 :single))
           (user-id (postmodern:query (:select 'user-id :from 'users
-                                              :where (:= 'login (restas.colorize:note-author note)))
+                                              :where (:= 'login (rulisp.colorize:note-author note)))
                                      :single)))
       (postmodern:execute (:insert-into 'formats :set
                                         'format-id id
                                         'user-id user-id
-                                        'title (restas.colorize:note-title note)
-                                        'code (restas.colorize:note-code note)
-                                        'lang (restas.colorize:note-lang note)))
-      (setf (restas.colorize:note-id note)
+                                        'title (rulisp.colorize:note-title note)
+                                        'code (rulisp.colorize:note-code note)
+                                        'lang (rulisp.colorize:note-lang note)))
+      (setf (rulisp.colorize:note-id note)
             id))
     note))

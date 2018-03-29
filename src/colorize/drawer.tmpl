@@ -1,0 +1,145 @@
+// -*- mode: closure-template-html -*-
+// colorize.tmpl
+//
+// This file is part of the restas-colorize library, released under Lisp-LGPL.
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+{namespace rulisp.colorize.view}
+
+{template finalizePage}
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    {\n}
+    <html xmlns="http://www.w3.org/1999/xhtml">
+	    <head>
+      	    <meta http-equiv="Content-Type" content="text/html; charset='utf-8'" />
+
+            {if $title}
+                <title>{$title}</title>
+            {/if}
+	    </head>
+
+	    <body>
+            {$menu |noAutoescape}
+            
+            {$content |noAutoescape}
+        </body>
+    </html>
+{/template}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show main menu
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template main-menu}
+    <ul class="colorize-top-menu">
+        <li>
+            <a href="{$hrefAll}">Все записи</a>
+        </li>
+
+        <li>
+            <a href="{$hrefCreate}">Создать</a>
+        </li>
+    </ul>
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show note info
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template show-note-info}
+    <div class="info">
+        Автор: <strong>{$author}</strong> - {$date}
+    </div>
+{/template}
+    
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show list notes
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template list-notes}
+    <div class="colorize-list-nav" >
+        {if $hrefAfter}<a href="{$hrefAfter}">« Позже</a>{/if}
+        {$first} - {min($first + length($notes) - 1, $totalCount)} 
+        из {$totalCount}  
+        {if $hrefBefore}<a href="{$hrefBefore}">Раньше »</a>{/if}
+    </div>
+
+    {foreach $note in $notes}
+        <div class="note">
+            <a href="{$note.href}">{$note.title != '' ? $note.title : '*notitle*'}</a>
+            {call show-note-info data="$note" /}
+        </div>
+    {/foreach}
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show one note
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template view-note}
+    <div class="note-detail">
+        <strong>{$title}</strong>
+        {call show-note-info data="all" /}
+        <div class="code">
+            {$code |noAutoescape}
+        </div>
+    </div>
+{/template}    
+    
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Create note form
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template create-note}
+    <form method="post">
+        <textarea rows="30" name="code" cols="80" style="width: 100%">{$code}</textarea>
+        <table style="text-align: left">
+            <tbody>
+                {if $preview and $author}
+                    <tr>
+                        <th>Описание:</th>
+                        <td>
+                            <input size="60" name="title" type="text" {if $title}value="{$title}"{/if}/>
+                        </td>
+                    </tr>
+                {/if}
+                    
+                <tr>
+                    <th>Форматировать как:</th>
+                    <td>
+                        <select name="lang" >
+                            {foreach $l in $langs}
+                                <option {if $l.id == $lang}selected{/if} value="{$l.id}">{$l.title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <input type="submit" value="Форматировать" name="preview" />
+        {if $preview and $author}
+            <input type="submit" value="Сохранить" name="save" />
+        {/if}
+
+        {if $preview}
+            <h3>Предварительный просмотр</h3>
+            <div class="code">
+                {$preview |noAutoescape}
+            </div>
+
+            <strong>HTML-код</strong>
+            <pre>
+                {$preview}
+            </pre>
+        {/if}
+    </form>    
+{/template}
+
+{template preview-note}
+    {call create-note data="all" /}
+{/template}
