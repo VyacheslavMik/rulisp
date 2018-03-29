@@ -15,7 +15,6 @@
 	       #:restas-directory-publisher
                #:xfactory
 	       #:cl-typesetting
-               #:wiki-parser
 	       #:net-telent-date
 	       #:local-time
 	       #:clon
@@ -23,14 +22,17 @@
 	       #:cl-libxml2
 	       #:babel
 	       #:colorize
-	       #:metabang-bind)
+	       #:metabang-bind
+	       #:iterate
+	       #:alexandria
+	       #:cl-ppcre)
   :defsystem-depends-on (#:closure-template)
   :components ((:file "pref")
                (:module :src
                         :components ((:file "packages")
                                      (:module "dokuwiki"
                                               :components ((:file "render-html"))
-                                              :depends-on ("packages" "wiki"))
+                                              :depends-on ("packages" "wiki" "wiki-parser"))
 				     (:module "auth"
                                               :components ((:module "templates"
 								    :components ((:closure-template "forgot")
@@ -64,6 +66,11 @@
 					      :components ((:file "defmodule")
 							   (:file "storage" :depends-on ("defmodule"))
 							   (:file "forum" :depends-on ("storage")))
+					      :depends-on ("packages"))
+
+				     (:module "wiki-parser"
+					      :components ((:file "parser")
+							   (:file "dokuwiki" :depends-on ("parser")))
 					      :depends-on ("packages"))
                                      (:file "storage" :depends-on ("packages"))
                                      (:file "pcl"  :depends-on ("rulisp"))

@@ -130,3 +130,13 @@
            #:storage-all-news
            #:storage-forum-news
            #:storage-topic-news))
+
+(defpackage #:wiki-parser
+  (:use #:cl #:iter)
+  (:export #:parse
+           #:remake-lexer
+           #:define-parser
+           #:define-toplevel-mode
+           #:define-mode
+           #:bad-element-condition
+           #:init-parser))
