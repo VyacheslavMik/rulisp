@@ -1,6 +1,6 @@
 ;;;; forum.lisp
 ;;;;
-;;;; This file is part of the restas-forum library, released under Lisp-LGPL.
+;;;; This file is part of the rulisp application, released under GNU Affero General Public License, Version 3.0
 ;;;; See file COPYING for details.
 ;;;;
 ;;;; Author: Moskvitin Andrey <archimag@gmail.com>
